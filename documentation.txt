@@ -1,0 +1,153 @@
+Question: 
+What makes people withdraw in the open university online courses?
+
+Key issue:
+1. Significant withdrawl rate
+2. Significant fail rate
+3. Only small percent pass
+
+  Class	      Examples
+  ----------- ---------
+  Distinction 3024
+  Fail        7052 
+  Pass        12361
+  Withdrawn   10156
+  ----------- ---------
+  Total       32593
+
+
+question break-down:
+1. Do people's demographics affect there preformances?
+2. Do passing students interact with material more than failing students?
+3. Do courses with certain fun materials attract more students more, 
+   hence lower fail/withdrawl rate?
+
+Significances:
+- customer retention
+- customer segmentation
+- email notification
+- study assistance
+
+Potential Stakeholders:
+coursera, universities - continual studies, educational institutions
+
+Method: 
+Exploratory analysis with classification
+
+1. Preclean data with Python pandas
+
+2. Extract features with pandas
+
+  2.1 X:
+  	2.1.1: Demographics: age, deprivation by region, education level etc.
+  	2.1.2: Assessments: mean score, mean final score, mean TMA/CMA score
+  	2.1.3: Interaction: sum of clicks, daily clicks, days active etc.
+  	2.1.4: Course_contents: count of each kind of materials.
+
+  2.2 Y: 4 classes: distinction/pass/fail/withdrawl
+
+3. Statistical tests 
+
+	- ANOVA (SelectKBest):
+		p-value sorted
+		('days_interacted', 0.0),
+ 		('daily_click', 0.0),
+ 		('highest_education', 4.0643970859196345e-178),
+ 		('count externalquiz', 1.9034359420956929e-165),
+ 		('imd_band', 2.0912379150998403e-69),
+ 		('count subpage', 6.5210658511451561e-50),
+ 		('age_band', 5.4296324586747911e-44),
+ 		('sum_click', 9.0279933874513522e-23),
+ 		('count quiz', 1.5977517881293157e-05),
+ 		('count glossary', 0.00012656965610212363)
+
+	- correlations:
+		absolute values sorted
+ 		('days_interacted', -0.57707214888598968)
+  		('sum_click', -0.43831729979495665),
+ 		('daily_click', -0.15099279699376469),
+ 		('highest_education', -0.14086246579530337),
+ 		('count subpage', 0.10412079067684751),
+ 		('imd_band', -0.092237991115877938),
+ 		('count externalquiz', 0.08786947677129775),
+		('age_band', -0.066499796926851054),
+		('count url', 0.055699420314541385),
+ 		('count forumng', 0.054867219522098554)
+
+4. Classfication models:
+	- random forest feature importances
+		('days_interacted', 0.41197462857319966),
+ 		('sum_click', 0.29471797983623577),
+ 		('daily_click', 0.044378195092469784),
+ 		('highest_education', 0.03295324420415708),
+ 		('count url', 0.029940463270458149),
+ 		('count subpage', 0.028354466621694094),
+ 		('count forumng', 0.02102885356769606),
+ 		('count quiz', 0.02043990958671137),
+ 		('count resource', 0.01459855946164075),
+ 		('count oucontent', 0.014549040936821687)
+
+5. Aggregated results:
+	('highest_education', 2),
+
+ 	('daily_click', 2),
+ 	('sum_click', 2),
+ 	('days_interacted', 2),
+
+ 	
+ 	('count subpage', 3),
+ 	('count quiz', 3), -- 2 no quiz
+ 	('count url', 2),
+ 	('count forumng', 2)
+
+	Top features:
+	Demographics: Highest Education
+	Interactions: Sum clicks; daily clicks; days_interacted
+	Contents: subpages, quizes, urls, forumng, oucontents
+
+5. Compare and validation:
+	- Visualize performances trends on important features
+
+	Validation Results:
+	Eliminate:
+		('count resource', 2), ---- not significant
+ 		('count externalquiz', 2), --- only one module has it
+ 	Add:
+ 		Demopgraphics: Age,Deprivation
+ 		Assessments: TMA,final
+
+6. Key findings conclusion:
+	Demographics:
+		1. More educated students perform better than less educated.
+		2. Older students perform better than younger students.
+		3. Students who come from less deprivated areas on average perform better.
+	Assessments:
+		1. 70% of the students who averages at least 60 in TMA have passed, compared 33% in those averages less than 60.
+		2. 87% of those who took the final passes, only 40% passed without final
+	Contents:
+		1. Good courses(AEG), bad courses(other)
+		2. Good traits of courses: 
+			- less subpages
+			- less quizes
+			- less urls
+			- less forumng
+
+7. Potential Improvements:
+ 	- Customer Strategies:
+ 		- Customized recommendations for different students according levels of their education, age, and locations
+ 		- Push email notifications of extra study assistance when people struggle with TMA
+ 		- Encourage students to take the final exam to increase the chance of passing
+	- Course materials structure:
+		- Overall, make the course structure to be simpler and easier
+		- Let course pages to contain less subpages,urls,forums
+		- Include less quizes
+
+8. suggestions for further studies:
+	1. Assessments often lack of data. 
+		I have noticed that over 50% people withdraw before they even start to take tests.
+		Therefore, in reality, it is hard to predict behavior based on test results.
+		half of students have taken CMA,
+		most have taken TMA at least once,
+		only small percent took the final.
+	2. It would be interesting to investigate on repetitive registration and how performances change over time.
+	3. When segmenting students, different groups of students might have different preferences over different kinds of course structures - in terms of contents and materials. -
